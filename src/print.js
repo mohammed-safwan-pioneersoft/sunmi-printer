@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-const App = () => {
+const SunmiPrinterPage = () => {
   const printReceipt = () => {
     if (window.sunmiInnerPrinter) {
       try {
@@ -40,4 +40,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default SunmiPrinterPage;
