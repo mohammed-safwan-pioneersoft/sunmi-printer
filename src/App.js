@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 const App = () => {
   const printReceipt = () => {
@@ -53,9 +53,10 @@ const App = () => {
     printWindow.close();
   };
 
-  useEffect(() => {
-    printReceipt();
-  }, []);
+  // Uncomment this if you want to print automatically on component mount
+  // useEffect(() => {
+  //   printReceipt();
+  // }, []);
 
   return (
     <div>
