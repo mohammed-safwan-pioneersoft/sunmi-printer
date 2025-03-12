@@ -2,30 +2,55 @@ import { useEffect } from "react";
 
 const App = () => {
   const printReceipt = () => {
-    if (window.sunmiInnerPrinter) {
-      try {
-        // Set font size (30 for large text)
-        window.sunmiInnerPrinter.setFontSize(30);
+    const printWindow = window.open("", "", "width=580,height=1600");
+    const content = `
+      <html>
+      <head>
+        <title>Receipt</title>
+        <style>
+          @page {
+            size: 58mm 160mm; /* Set paper size */
+            margin: 0;
+          }
+          body {
+            font-family: 'Courier', monospace;
+            font-size: 14px; /* Adjust for thermal clarity */
+            width: 58mm;
+            margin: 0;
+            padding: 5px;
+          }
+          .center { text-align: center; }
+          .line { border-top: 1px dashed black; margin: 5px 0; }
+          .item { display: flex; justify-content: space-between; }
+        </style>
+      </head>
+      <body>
+        <div class="center"><h2>Your Store</h2></div>
+        <div class="center">Receipt #12345</div>
+        <div class="line"></div>
 
-        // Print header
-        window.sunmiInnerPrinter.printText("=== RECEIPT ===\n");
+        <div class="item">
+          <span>Coffee</span> <span>1 x $5.00</span>
+        </div>
+        <div class="item">
+          <span>Tea</span> <span>2 x $3.00</span>
+        </div>
 
-        // Print body
-        window.sunmiInnerPrinter.printText("Item: Coffee\n");
-        window.sunmiInnerPrinter.printText("Price: $5.00\n");
-        window.sunmiInnerPrinter.printText("--------------------\n");
+        <div class="line"></div>
+        <div class="item">
+          <strong>Total</strong> <strong>$11.00</strong>
+        </div>
 
-        // Print footer
-        window.sunmiInnerPrinter.printText("Thank you!\n");
+        <div class="line"></div>
+        <div class="center">Thank You!</div>
+      </body>
+      </html>
+    `;
 
-        // Cut paper (if supported)
-        window.sunmiInnerPrinter.cutPaper();
-      } catch (error) {
-        console.error("Error printing receipt:", error);
-      }
-    } else {
-      alert("Sunmi printer not available");
-    }
+    printWindow.document.write(content);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
   };
 
   useEffect(() => {
@@ -34,7 +59,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Sunmi Printer Test</h1>
+      <h1>Thermal Printer Test (58x160mm)</h1>
       <button onClick={printReceipt}>Print Receipt</button>
     </div>
   );
