@@ -1,53 +1,40 @@
-import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
-
-const Receipt = React.forwardRef((props, ref) => (
-  <div ref={ref} style={{ width: "58mm", margin: "0 auto", fontFamily: "'Courier', monospace", fontSize: "14px" }}>
-    <div style={{ textAlign: "center" }}>
-      <h2>Your Store</h2>
-    </div>
-    <div style={{ textAlign: "center" }}>Receipt #12345</div>
-    <div style={{ borderTop: "1px dashed black", margin: "5px 0" }}></div>
-
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span>Coffee</span> <span>1 x $5.00</span>
-    </div>
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span>Tea</span> <span>2 x $3.00</span>
-    </div>
-
-    <div style={{ borderTop: "1px dashed black", margin: "5px 0" }}></div>
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <strong>Total</strong> <strong>$11.00</strong>
-    </div>
-
-    <div style={{ borderTop: "1px dashed black", margin: "5px 0" }}></div>
-    <div style={{ textAlign: "center" }}>Thank You!</div>
-  </div>
-));
+import React from "react";
 
 const App = () => {
-  const componentRef = useRef();
+  const printReceipt = () => {
+    if (window.SunmiInnerPrinter) {
+      try {
+        window.SunmiInnerPrinter.printerInit(); // Initialize printer
+        window.SunmiInnerPrinter.setAlignment(1); // Center align
+        window.SunmiInnerPrinter.printOriginalText("Your Store\n");
+        window.SunmiInnerPrinter.setAlignment(0); // Left align
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    pageStyle: `
-      @page {
-        size: 58mm 160mm;
-        margin: 0;
+        window.SunmiInnerPrinter.printOriginalText("Receipt #12345\n");
+        window.SunmiInnerPrinter.printOriginalText("-------------------------\n");
+
+        window.SunmiInnerPrinter.printOriginalText("Coffee    1 x $5.00\n");
+        window.SunmiInnerPrinter.printOriginalText("Tea       2 x $3.00\n");
+
+        window.SunmiInnerPrinter.printOriginalText("-------------------------\n");
+        window.SunmiInnerPrinter.printOriginalText("Total:       $11.00\n");
+        window.SunmiInnerPrinter.printOriginalText("-------------------------\n");
+
+        window.SunmiInnerPrinter.setAlignment(1);
+        window.SunmiInnerPrinter.printOriginalText("Thank You!\n");
+
+        window.SunmiInnerPrinter.lineWrap(3); // Feed paper
+      } catch (err) {
+        console.error("Sunmi print error:", err);
       }
-      body {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-    `,
-  });
+    } else {
+      console.error("SunmiInnerPrinter not available");
+    }
+  };
 
   return (
     <div>
-      <h1>Thermal Printer Test (58x160mm)</h1>
-      <button onClick={handlePrint}>Print Receipt</button>
-      <Receipt ref={componentRef} />
+      <h1>Sunmi Thermal Print Test</h1>
+      <button onClick={printReceipt}>Print Receipt</button>
     </div>
   );
 };
